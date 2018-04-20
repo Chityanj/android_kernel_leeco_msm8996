@@ -160,6 +160,13 @@ struct cpufreq_interactive_tunables {
 
 	/* Whether to enable prediction or not */
 	bool enable_prediction;
+
+	/* Improves frequency selection for more energy */
+	bool powersave_bias;
+
+	/* Maximum frequency while the screen is off */
+#define DEFAULT_SCREEN_OFF_MAX 307200
+	unsigned long screen_off_max;
 };
 
 /* For cases where we have single governor instance for system */
