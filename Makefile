@@ -1,6 +1,6 @@
 VERSION = 3
 PATCHLEVEL = 18
-SUBLEVEL = 110
+SUBLEVEL = 112
 EXTRAVERSION =
 NAME = Diseased Newt
 
@@ -403,6 +403,20 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security -mcpu=cortex-a57.cortex-a53 -mtune=cortex-a57.cortex-a53 \
 		   -std=gnu89
+
+# Choose Cortex-A57 as the target which is the closest to Kryo.
+KBUILD_CFLAGS	+= -mcpu=cortex-a57+crc+crypto
+
+# Kryo doesn't need 835769/843419 erratum fixes.
+# Some toolchains enable those fixes automatically, so opt-out.
+KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-835769)
+KBUILD_CFLAGS	+= $(call cc-option, -mno-fix-cortex-a53-843419)
+LDFLAGS_vmlinux	+= $(call ld-option, --no-fix-cortex-a53-835769)
+LDFLAGS_vmlinux	+= $(call ld-option, --no-fix-cortex-a53-843419)
+LDFLAGS_MODULE	+= $(call ld-option, --no-fix-cortex-a53-835769)
+LDFLAGS_MODULE	+= $(call ld-option, --no-fix-cortex-a53-843419)
+LDFLAGS		+= $(call ld-option, --no-fix-cortex-a53-835769)
+LDFLAGS		+= $(call ld-option, --no-fix-cortex-a53-843419)
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
@@ -819,9 +833,6 @@ LDFLAGS_vmlinux += $(LDFLAGS_BUILD_ID)
 ifeq ($(CONFIG_STRIP_ASM_SYMS),y)
 LDFLAGS_vmlinux	+= $(call ld-option, -X,)
 endif
-
-LDFLAGS_vmlinux += $(call ld-option, --fix-cortex-a53-843419)
-LDFLAGS_MODULE += $(call ld-option, --fix-cortex-a53-843419)
 
 # Default kernel image to build when no specific target is given.
 # KBUILD_IMAGE may be overruled on the command line or
