@@ -65,6 +65,7 @@
 static struct wake_lock mbhc_button_wakelock;
 static struct wcd_mbhc *g_mbhc;
 static struct delayed_work mbhc_pending_dwork;
+static struct delayed_work mbhc_in3p_button_dwork;
 static int hph_irq = 0;
 static int det_extn_cable_en;
 static int headset_detect_enable = -1;
